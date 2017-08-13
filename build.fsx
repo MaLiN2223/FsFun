@@ -1,13 +1,14 @@
 // include Fake libs
 #r "./packages/FAKE/tools/FakeLib.dll"
 
+open Fake.Testing;
 open Fake
 
 // Directories
 let buildDir  = "./build/"
 let deployDir = "./deploy/"
 let sourceDir = "./src/"
-let testsDir = "./tests/"
+let testsDir = "./FSharpFunTests/FSharpFunTests/bin/Debug"
 
 // Filesets
 let appReferences  =
@@ -41,11 +42,20 @@ trace "Building Tests..."
   |> Log "TestBuild-Output: "
 )
 
+let runTests () =
+    tracefn "Running tests..."
+    !! (testsDir @@ "*.Tests.dll")
+    |> xUnit2 (fun p -> {
+                        p with HtmlOutputPath = Some(testsDir @@ "xunit.html");
+                               ToolPath = @"../packages/xunit.runner.console.2.0.0/tools/xunit.console.exe"
+                        })
+
+
 Target "Tests" (fun _ ->
-    trace "Running Tests..."
-    !! (testsDir + @"\*Tests.dll") 
-    |> xUnit (fun p -> {p with OutputDir = testsDir })
+    runTests()
 )
+
+
 
 
 // Build order

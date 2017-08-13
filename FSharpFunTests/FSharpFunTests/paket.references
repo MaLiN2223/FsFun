@@ -1,3 +1,2 @@
 FSharp.Core
-FAKE
-FsUnit 
+Expecto
